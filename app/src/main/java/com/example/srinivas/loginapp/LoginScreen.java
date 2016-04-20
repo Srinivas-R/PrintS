@@ -44,7 +44,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
 
                 //Send a user with the entered USN, password to the server
-                ServerTask serverTask = new ServerTask(user,"http://localhost:3001/login",1,this);
+                ServerTask serverTask = new ServerTask(user,"http://localhost:3001/login",1,LoginScreen.this);
 
                 //This dummy string serves no purpose, I'm too lazy to change the function prototype
                 String dummy = null;
