@@ -46,11 +46,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         switch(v.getId())
         {
             case R.id.button:        //Login
-                etUSN.setText("Doign soemthing");
+                //etUSN.setText("Doign soemthing");
                 User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
-                //Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
-                //Log.d("Test", "Doing something");
-
+                Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
 
                 //Send a user with the entered USN, password to the server
                 ServerTask serverTask = new ServerTask(user,"http://192.168.43.95:3001/login",1,LoginScreen.this);
@@ -58,10 +56,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 //This dummy string serves no purpose, I'm too lazy to change the function prototype
                 String dummy = null;
                 serverTask.execute(dummy);
-
-
+                user = serverTask.getObtainedUser();
                 userLocalStore.storeUserData(user);
                 userLocalStore.setUserLoggedIn(true);
+
                 break;
 
             case R.id.button2:       //Register

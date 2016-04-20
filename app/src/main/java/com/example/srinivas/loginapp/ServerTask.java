@@ -25,6 +25,12 @@ public class ServerTask extends AsyncTask<String,String,String> {
     private Context context;
     private int type;                              //1 - Get User, 2 - Get Array of PrintJobs
 
+    public User getObtainedUser()
+    {
+        return obtainedUser;
+    }
+
+
     ServerTask(User u,String URL,int Type,Context context)
     {
         this.url = URL;
@@ -63,8 +69,6 @@ public class ServerTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String s) {
-
-
         if(type == 1)
         {
             try {
@@ -72,8 +76,8 @@ public class ServerTask extends AsyncTask<String,String,String> {
                 {
                     JSONObject temp = null;
                     temp = new JSONObject(s);
-                    User user = JSONParser.JSONtoUser(temp);
-                    Toast.makeText(context,"Username : " + user.name,Toast.LENGTH_LONG).show();
+                    User tempUser = JSONParser.JSONtoUser(temp);
+                    Toast.makeText(context,"Username : " + tempUser.name,Toast.LENGTH_LONG).show();
                 }
                 else
                     Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();

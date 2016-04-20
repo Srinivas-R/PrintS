@@ -54,7 +54,7 @@ public class ServerConnection extends Application {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestMethod("POST");
-            Toast.makeText(context,jsonUser.toString(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(context,jsonUser.toString(),Toast.LENGTH_LONG).show();
             conn.connect();
 
             OutputStream os = conn.getOutputStream();
@@ -75,10 +75,10 @@ public class ServerConnection extends Application {
             receivedUser = new JSONObject(responseStrBuffer.toString());
 
         } catch (java.net.SocketTimeoutException e) {
-            Toast.makeText(context,"Timed Out",Toast.LENGTH_LONG).show();
+            e.printStackTrace();
 
         } catch (IOException | JSONException e) {
-            Toast.makeText(context,"Error",Toast.LENGTH_LONG).show();
+            e.printStackTrace();
         } finally {
 
             if(conn != null)
