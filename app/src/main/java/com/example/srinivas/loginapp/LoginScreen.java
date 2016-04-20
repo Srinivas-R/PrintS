@@ -6,9 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener{
@@ -16,6 +19,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     Button bLogin,bRegister;
     EditText etUSN, etPassword;
     UserLocalStore userLocalStore;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +34,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         bRegister = (Button)findViewById(R.id.button2);
         etUSN = (EditText)findViewById(R.id.editText);
         etPassword = (EditText)findViewById(R.id.editText2);
+        bLogin.setOnClickListener(this);
         bRegister.setOnClickListener(this);
+
 
     }
 
@@ -40,8 +46,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         switch(v.getId())
         {
             case R.id.button:        //Login
-
+                etUSN.setText("Doign soemthing");
                 User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
+                //Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
+                //Log.d("Test", "Doing something");
+
 
                 //Send a user with the entered USN, password to the server
                 ServerTask serverTask = new ServerTask(user,"http://192.168.43.95:3001/login",1,LoginScreen.this);
