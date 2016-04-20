@@ -30,7 +30,14 @@ public class ServerConnection extends Application {
     //First method sends a user with USN and password, receives JSON object with full User details
     public static JSONObject loadUserFromDatabase(User user,String Address,Context context) throws IOException{
 
-        JSONObject jsonUser = JSONParser.UsertoJSON(user);
+        JSONObject jsonUser = new JSONObject();
+        try {
+            jsonUser.put("USN",user.USN);
+            jsonUser.put("passwd",user.password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         JSONObject receivedUser = null;
 
         HttpURLConnection conn = null;

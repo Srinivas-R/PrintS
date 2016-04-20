@@ -87,8 +87,8 @@ public class JSONParser {
                 name = parentObject.getString("Name");
                 mobile = parentObject.getString("Mobile");
                 jobs = parentObject.getJSONArray("MyJobs");
-                n = parentObject.getInt("numberOfPendingJobs");
-
+                //n = parentObject.getInt("numberOfPendingJobs");
+                n = jobs.length();
                 if(n==0)
                     myJobs = null;
                 else
@@ -108,6 +108,7 @@ public class JSONParser {
 
         String name,USN,password,mobile;
         PrintJob[] myJobs;
+
         int numberOfPendingJobs;
 
         name = user.name;
@@ -119,13 +120,14 @@ public class JSONParser {
 
         JSONArray jobs = PrintJobstoJSON(myJobs,numberOfPendingJobs);
 
-        try {
-            output.put("name",name);
+        try
+        {
+            output.put("userId",0);
+            output.put("passwd",password);
             output.put("USN",USN);
-            output.put("password",password);
-            output.put("mobile",mobile);
             output.put("name",name);
-            output.put("numberOfPendingJobs",numberOfPendingJobs);
+            output.put("mobile",mobile);
+            //output.put("numberOfPendingJobs",numberOfPendingJobs);
             output.put("myJobs",jobs);
 
         } catch (JSONException e) {
