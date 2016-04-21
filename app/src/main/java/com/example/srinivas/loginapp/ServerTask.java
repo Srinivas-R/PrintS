@@ -34,7 +34,6 @@ public class ServerTask extends AsyncTask<String,String,String> {
         return obtainedUser;
     }
 
-
     ServerTask(User u,String URL,int Type,Context context)
     {
         this.url = URL;
@@ -47,6 +46,7 @@ public class ServerTask extends AsyncTask<String,String,String> {
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Processing");
         progressDialog.setMessage("Please wait");
+        progressDialog.show();
         userLocalStore = new UserLocalStore(context);
 
     }
@@ -57,18 +57,23 @@ public class ServerTask extends AsyncTask<String,String,String> {
 
             if(type == 1)
             {
-                JSONObject jsonObject = ServerConnection.loadUserFromDatabase(user,url,context);
+                JSONObject jsonObject = ServerConnection.loadUserFromDatabase(user,url);
                 //Parse into user object, store in obtainedUser
                 obtainedUser = JSONParser.JSONtoUser(jsonObject);
                 if(jsonObject!=null)
                 return jsonObject.toString();
             }
-            else
+            else if(type == 2)
             {
-                JSONArray jsonArray = ServerConnection.loadPrintJobsFromDatabase(user,url,context);
+                JSONArray jsonArray = ServerConnection.loadPrintJobsFromDatabase(user,url);
                 //Parse into PrintJob object, store in obtainedPrintJobs array
                 obtainedPrintJobs = JSONParser.JSONtoPrintJobs(jsonArray);
                 return jsonArray.toString();
+            }
+            else
+            {
+                ServerConnection.sendPrintJobToDatabase(user,url);
+                return new String("Done");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,31 +87,30 @@ public class ServerTask extends AsyncTask<String,String,String> {
         progressDialog.dismiss();
         if(type == 1)
         {
-            try {
-                if(s != null)
-                {
-                    JSONObject temp;
-                    temp = new JSONObject(s);
-                    User tempUser = JSONParser.JSONtoUser(temp);
-
-                    Toast.makeText(context,"Username : " + obtainedUser.name,Toast.LENGTH_LONG).show();
-                    userLocalStore.storeUserData(obtainedUser);
-                    userLocalStore.setUserLoggedIn(true);
-                    context.startActivity(new Intent(context,MainActivity.class));
-                }
-                else
-                    Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(s != null)
+            {
+                Toast.makeText(context,"Username : " + obtainedUser.name,Toast.LENGTH_LONG).show();
+                userLocalStore.storeUserData(obtainedUser);
+                userLocalStore.setUserLoggedIn(true);
+                context.startActivity(new Intent(context,MainActivity.class));
             }
+            else
+                Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();
+
         }
-        else
+        else if(type == 2)
         {
             if(s.length() > 0)
                 Toast.makeText(context,"PrintJobs received",Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(context,"No PrintJobs received",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            if(s == "Done")
+                Toast.makeText(context,"PrintJobs Sent",Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context,"PrintJobs not Sent",Toast.LENGTH_SHORT).show();
         }
     }
 }

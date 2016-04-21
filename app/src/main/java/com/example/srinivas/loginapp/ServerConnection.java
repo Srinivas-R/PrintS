@@ -28,7 +28,8 @@ public class ServerConnection extends Application {
     //Each method will request from seperate tables
 
     //First method sends a user with USN and password, receives JSON object with full User details
-    public static JSONObject loadUserFromDatabase(User user,String Address,Context context) throws IOException{
+    public static JSONObject loadUserFromDatabase(User user,String Address) throws IOException
+    {
 
         JSONObject jsonUser = new JSONObject();
         JSONObject receivedUser = null;
@@ -44,9 +45,6 @@ public class ServerConnection extends Application {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
         try {
             URL url = new URL(Address);
 
@@ -58,7 +56,6 @@ public class ServerConnection extends Application {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             conn.setRequestMethod("POST");
-            //Toast.makeText(context,jsonUser.toString(),Toast.LENGTH_LONG).show();
             conn.connect();
 
             OutputStream os = conn.getOutputStream();
@@ -102,7 +99,7 @@ public class ServerConnection extends Application {
     }
 
     //Second method sends a user, receives JSON array containing PrintJobs[]
-    public static JSONArray loadPrintJobsFromDatabase(User user,String Address,Context context) throws IOException
+    public static JSONArray loadPrintJobsFromDatabase(User user,String Address) throws IOException
     {
 
         JSONObject JSONuser = JSONParser.UsertoJSON(user);
@@ -114,8 +111,8 @@ public class ServerConnection extends Application {
             URL url = new URL(Address);
 
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type","application/json");
-            conn.setRequestProperty("Accept","application/json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setUseCaches(false);
@@ -153,6 +150,32 @@ public class ServerConnection extends Application {
         }
 
         return jsonArray;
+    }
+
+    public static void sendPrintJobToDatabase(User user,String Address) throws IOException
+    {
+        JSONObject jsonUser = JSONParser.PrintJobtoJSON(user.getLatestPrintJob());
+
+        HttpURLConnection conn;
+        URL url = new URL(Address);
+
+        conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(5000);
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        conn.setUseCaches(false);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestMethod("POST");
+        conn.connect();
+
+        OutputStream os = conn.getOutputStream();
+        OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
+        osw.write(jsonUser.toString());
+
+        osw.flush();
+        osw.close();
+
+
     }
 
 }

@@ -7,7 +7,7 @@ public class User {
 
     String name,USN,password,mobile;
     PrintJob myJobs[];
-    int numberOfPendingJobs;
+    int numberOfJobs;
 
     public User(String n,String u,String p,String m,PrintJob[] MJ,int nOPJ)
     {
@@ -16,7 +16,7 @@ public class User {
         password = p;
         mobile = m;
         myJobs = MJ;
-        numberOfPendingJobs = nOPJ;
+        numberOfJobs = nOPJ;
     }
 
     public User(String u,String p)
@@ -25,8 +25,23 @@ public class User {
         USN = u;
         password = p;
         mobile = "";
-        numberOfPendingJobs = 0;
-        myJobs = null;
+        numberOfJobs = 0;
+        myJobs = new PrintJob[10];
+    }
+
+    public void addPrintJob(PrintJob printJob)
+    {
+        if(numberOfJobs == 10)
+            throw new ArrayIndexOutOfBoundsException("More than 10 print jobs");
+        numberOfJobs++;
+        if(numberOfJobs == 1)
+            myJobs = new PrintJob[10];
+        myJobs[numberOfJobs] = printJob;
+    }
+
+    public PrintJob getLatestPrintJob()
+    {
+        return myJobs[numberOfJobs];
     }
 
 

@@ -23,19 +23,21 @@ public class PrintJob {
         completed = true;
     }
 
-    public PrintJob(String aUSN,String jN,String fP,int noP)
+    public PrintJob(String aUSN,String jN,String fP,int noP,int price,boolean completed)
     {
         associatedUSN = aUSN;
         jobName = jN;
         localFilePath = fP;
         numberOfPages = noP;
-        f = new File(localFilePath);
-        completed = false;
-        if(!f.exists())
+        //f = new File(localFilePath);
+        f = null;
+        this.completed = completed;
+        this.price = price;
+        /*if(!f.exists())
         {
             localFilePath = null;
             throw new IllegalArgumentException("Invalid path to file, PrintJob constructor");
-        }
+        }*/
 
     }
 

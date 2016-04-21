@@ -49,9 +49,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             case R.id.button:        //Login
 
                 //User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
-                User user = new User("1RV14CS159","12345");  //Just for testing
+                User user = new User("1RV14CS175","12345");  //Just for testing
                 Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
-                ServerTask serverTask = new ServerTask(user,"http://192.168.43.95:3001/login",1,LoginScreen.this);
+                ServerTask serverTask = new ServerTask(user,"http://25.51.242.195/login",1,LoginScreen.this);
 
                 //This dummy string serves no purpose, I'm too lazy to change the function prototype
                 String dummy = null;

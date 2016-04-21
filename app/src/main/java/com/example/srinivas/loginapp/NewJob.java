@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -20,7 +22,7 @@ public class NewJob extends AppCompatActivity implements View.OnClickListener{
     EditText etJobName,etNOP;
     TextView tvFilePath;
     FileChooser fileChooser;
-    ServerConnection serverConnection;
+    UserLocalStore userLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class NewJob extends AppCompatActivity implements View.OnClickListener{
                 tvFilePath.setText(file.getAbsolutePath());
             }
         });
+        userLocalStore = new UserLocalStore(this);
 
         bSubmit.setOnClickListener(this);
         bSelect.setOnClickListener(this);
@@ -64,7 +67,17 @@ public class NewJob extends AppCompatActivity implements View.OnClickListener{
                 break;
 
             case R.id.button8:                  //Submit
-
+                PrintJob printJob = new PrintJob(userLocalStore.getLoggedInUser().USN,
+                        etJobName.getText().toString(),tvFilePath.toString(),
+                        Integer.parseInt(etNOP.getText().toString()),
+                        Integer.parseInt(etNOP.getText().toString()),
+                        false);
+                User temp = userLocalStore.getLoggedInUser();
+                temp.addPrintJob(printJob);
+                Toast.makeText(this, "Sending PrintJob", Toast.LENGTH_SHORT);
+                ServerTask serverTask = new ServerTask(temp,"http://192.168.43.95:3001/jobs/create",3,NewJob.this);
+                String dummy = null;
+                serverTask.execute(dummy);
         }
 
     }

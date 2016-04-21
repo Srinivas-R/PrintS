@@ -27,8 +27,8 @@ public class UserLocalStore {
         spEditor.putString("USN",user.USN);
         spEditor.putString("Password",user.password);
         spEditor.putString("Mobile",user.mobile);
-        spEditor.putInt("NumberOfPendingJobs", user.numberOfPendingJobs);
-        spEditor.putString("MyJobs", JSONParser.PrintJobstoJSON(user.myJobs, user.numberOfPendingJobs).toString());
+        spEditor.putInt("NumberOfPendingJobs", user.numberOfJobs);
+        spEditor.putString("MyJobs", JSONParser.PrintJobstoJSON(user.myJobs, user.numberOfJobs).toString());
         spEditor.commit();
 
     }

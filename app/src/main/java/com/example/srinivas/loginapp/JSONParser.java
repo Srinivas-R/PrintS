@@ -13,10 +13,12 @@ public class JSONParser {
     {
         try {
             String aUSN = job.getString("associatedUSN");
-            String jN = job.getString("jobName");
-            String fP = job.getString("filePath");
-            int nop = job.getInt("numberOfPages");
-            return new PrintJob(aUSN,jN,fP,nop);
+            String jN = job.getString("JobName");
+            String fP = "";
+            int nop = job.getInt("NumberPages");
+            int price = job.getInt("Price");
+            boolean completed = job.getBoolean("Completed");
+            return new PrintJob(aUSN,jN,fP,nop,price,completed);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -24,15 +26,15 @@ public class JSONParser {
 
     }
 
-    private static JSONObject PrintJobtoJSON(PrintJob printJob)
-    {
+    public static JSONObject PrintJobtoJSON(PrintJob printJob)
+        {
         JSONObject output = new JSONObject();
         try {
-            output.put("associatedUSN",printJob.associatedUSN);
-            output.put("jobName",printJob.jobName);
-            output.put("price",printJob.price);
-            output.put("numberOfPages",printJob.numberOfPages);
-            output.put("completed",printJob.completed);
+            output.put("USN",printJob.associatedUSN);
+            output.put("JobName",printJob.jobName);
+            output.put("Price",printJob.price);
+            output.put("NumberPages",printJob.numberOfPages);
+            output.put("Completed",printJob.completed);
             return output;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -112,16 +114,16 @@ public class JSONParser {
         String name,USN,password,mobile;
         PrintJob[] myJobs;
 
-        int numberOfPendingJobs;
+        int numberOfJobs;
 
         name = user.name;
         USN = user.USN;
         password = user.password;
         mobile = user.mobile;
         myJobs = user.myJobs;
-        numberOfPendingJobs = user.numberOfPendingJobs;
+        numberOfJobs = user.numberOfJobs;
 
-        JSONArray jobs = PrintJobstoJSON(myJobs,numberOfPendingJobs);
+        JSONArray jobs = PrintJobstoJSON(myJobs,numberOfJobs);
 
         try
         {
