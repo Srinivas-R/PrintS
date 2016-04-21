@@ -49,7 +49,7 @@ public class ServerConnection extends Application {
             URL url = new URL(Address);
 
             conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
+            conn.setConnectTimeout(10000);
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setUseCaches(false);
