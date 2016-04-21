@@ -31,6 +31,13 @@ public class ServerConnection extends Application {
     public static JSONObject loadUserFromDatabase(User user,String Address,Context context) throws IOException{
 
         JSONObject jsonUser = new JSONObject();
+        JSONObject receivedUser = null;
+        JSONArray tempreceivedUser = null;
+
+        HttpURLConnection conn = null;
+        BufferedReader streamReader = null;
+
+
         try {
             jsonUser.put("USN",user.USN);
             jsonUser.put("passwd",user.password);
@@ -38,10 +45,7 @@ public class ServerConnection extends Application {
             e.printStackTrace();
         }
 
-        JSONObject receivedUser = null;
 
-        HttpURLConnection conn = null;
-        BufferedReader streamReader = null;
 
         try {
             URL url = new URL(Address);
@@ -72,7 +76,13 @@ public class ServerConnection extends Application {
             while ((inputStr = streamReader.readLine()) != null)
                 responseStrBuffer.append(inputStr);
 
-            receivedUser = new JSONObject(responseStrBuffer.toString());
+            if(responseStrBuffer.length()>0)
+            {
+                tempreceivedUser = new JSONArray(responseStrBuffer.toString());
+                receivedUser = tempreceivedUser.getJSONObject(0);
+            }
+            else
+                receivedUser = JSONParser.UsertoJSON(new User("Error","DummyPassword"));
 
         } catch (java.net.SocketTimeoutException e) {
             e.printStackTrace();

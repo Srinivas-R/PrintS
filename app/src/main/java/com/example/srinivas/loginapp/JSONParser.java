@@ -76,17 +76,20 @@ public class JSONParser {
 
     public static User JSONtoUser(JSONObject parentObject)
     {
+            if(parentObject == null || parentObject.length() == 0)
+                return null;
             String name,USN,password,mobile;
             PrintJob[] myJobs;
             JSONArray jobs;
             int n;
+
 
             try {
                 password = parentObject.getString("passwd");
                 USN = parentObject.getString("USN");
                 name = parentObject.getString("Name");
                 mobile = parentObject.getString("Mobile");
-                jobs = parentObject.getJSONArray("MyJobs");
+                jobs = parentObject.getJSONArray("PrintJobs");
                 //n = parentObject.getInt("numberOfPendingJobs");
                 n = jobs.length();
                 if(n==0)

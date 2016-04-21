@@ -2,6 +2,7 @@ package com.example.srinivas.loginapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -18,6 +19,8 @@ import java.net.URL;
  */
 public class ServerTask extends AsyncTask<String,String,String> {
 
+    private UserLocalStore userLocalStore;
+    private ProgressDialog progressDialog;
     private String url;
     private User user;
     private User obtainedUser;
@@ -39,6 +42,11 @@ public class ServerTask extends AsyncTask<String,String,String> {
         this.obtainedUser = null;
         this.obtainedPrintJobs = null;
         this.context = context;
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Processing");
+        progressDialog.setMessage("Please wait");
+        userLocalStore = new UserLocalStore(context);
 
     }
 
@@ -51,6 +59,7 @@ public class ServerTask extends AsyncTask<String,String,String> {
                 JSONObject jsonObject = ServerConnection.loadUserFromDatabase(user,url,context);
                 //Parse into user object, store in obtainedUser
                 obtainedUser = JSONParser.JSONtoUser(jsonObject);
+                if(jsonObject!=null)
                 return jsonObject.toString();
             }
             else
@@ -69,15 +78,19 @@ public class ServerTask extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String s) {
+        progressDialog.dismiss();
         if(type == 1)
         {
             try {
-                if(s.length() > 0)
+                if(s != null)
                 {
-                    JSONObject temp = null;
+                    JSONObject temp;
                     temp = new JSONObject(s);
                     User tempUser = JSONParser.JSONtoUser(temp);
-                    Toast.makeText(context,"Username : " + tempUser.name,Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(context,"Username : " + obtainedUser.name,Toast.LENGTH_LONG).show();
+                    userLocalStore.storeUserData(obtainedUser);
+                    userLocalStore.setUserLoggedIn(true);
                 }
                 else
                     Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();

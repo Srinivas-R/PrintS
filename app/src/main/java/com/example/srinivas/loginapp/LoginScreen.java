@@ -18,8 +18,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     Button bLogin,bRegister;
     EditText etUSN, etPassword;
-    UserLocalStore userLocalStore;
-    TextView textView;
+    //TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +28,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
 
 
-        userLocalStore = new UserLocalStore(this);
+
         bLogin = (Button)findViewById(R.id.button);
         bRegister = (Button)findViewById(R.id.button2);
         etUSN = (EditText)findViewById(R.id.editText);
         etPassword = (EditText)findViewById(R.id.editText2);
+
+
         bLogin.setOnClickListener(this);
         bRegister.setOnClickListener(this);
 
@@ -46,25 +47,22 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         switch(v.getId())
         {
             case R.id.button:        //Login
-                //etUSN.setText("Doign soemthing");
-                User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
-                Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
 
-                //Send a user with the entered USN, password to the server
+                //User user = new User(etUSN.getText().toString(),etPassword.getText().toString());
+                User user = new User("1RV14CS159","12345");  //Just for testing
+                Toast.makeText(LoginScreen.this, "Doing something", Toast.LENGTH_SHORT).show();
                 ServerTask serverTask = new ServerTask(user,"http://192.168.43.95:3001/login",1,LoginScreen.this);
 
                 //This dummy string serves no purpose, I'm too lazy to change the function prototype
                 String dummy = null;
                 serverTask.execute(dummy);
-                user = serverTask.getObtainedUser();
-                userLocalStore.storeUserData(user);
-                userLocalStore.setUserLoggedIn(true);
-
                 break;
 
             case R.id.button2:       //Register
                 startActivity(new Intent(this,RegisterScreen.class));
                 break;
+
+
 
         }
 
