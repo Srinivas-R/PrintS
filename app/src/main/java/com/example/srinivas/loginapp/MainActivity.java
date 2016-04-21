@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //startActivity(new Intent(this,NewJob.class));
+        //TESTING
+        startActivity(new Intent(this, MyJobs.class));
         userLocalStore = new UserLocalStore(this);
         bLogout = (Button)findViewById(R.id.button3);
         bNewJob = (Button)findViewById(R.id.button5);

@@ -44,5 +44,25 @@ public class User {
         return myJobs[numberOfJobs];
     }
 
+    public String[] getJobNames()
+    {
+        String[] output = new String[numberOfJobs];
+        for(int i=0;i<numberOfJobs;i++)
+        {
+            output[i] = myJobs[i].jobName;
+        }
+        return output;
+    }
+
+    public PrintJob searchPrintJobs(String name)
+    {
+        for(int i=0;i<numberOfJobs;i++)
+        {
+            if(myJobs[i].jobName == name)
+                return myJobs[i];
+        }
+        return null;
+    }
+
 
 }

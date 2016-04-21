@@ -33,9 +33,10 @@ public class JSONParser {
             output.put("JobName",printJob.jobName);
             output.put("Price",printJob.price);
             output.put("NumberPages",printJob.numberOfPages);
+            output.put("Completed",printJob.completed);
             output.put("USN",printJob.associatedUSN);
             output.put("userUSN",printJob.associatedUSN);
-            output.put("Completed",printJob.completed);
+
             return output;
         } catch (JSONException e) {
             e.printStackTrace();
