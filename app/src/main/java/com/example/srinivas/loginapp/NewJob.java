@@ -74,10 +74,8 @@ public class NewJob extends AppCompatActivity implements View.OnClickListener{
                         false);
                 User temp = userLocalStore.getLoggedInUser();
                 temp.addPrintJob(printJob);
-                Toast.makeText(this, "Sending PrintJob", Toast.LENGTH_SHORT);
                 ServerTask serverTask = new ServerTask(temp,"http://25.51.242.195:3001/jobs/create",3,NewJob.this);
-                String dummy = null;
-                serverTask.execute(dummy);
+                serverTask.execute();
         }
 
     }

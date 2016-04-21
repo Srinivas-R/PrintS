@@ -46,13 +46,15 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
         switch(v.getId())
         {
-            case R.id.button4:
+            case R.id.button4:             //Register
                 String name = etName.getText().toString();
                 String USN = etUSN.getText().toString();
                 String password = etPassword.getText().toString();
                 String mobile = etMobile.getText().toString();
                 User user = new User(name,USN,password,mobile,null,0);
-                //TODO : Store User in the database
+
+                ServerTask serverTask = new ServerTask(user,"http://25.51.242.195:3001/login",4,RegisterScreen.this);
+                serverTask.execute();
                 break;
         }
 

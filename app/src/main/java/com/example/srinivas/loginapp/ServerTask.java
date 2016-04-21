@@ -18,7 +18,7 @@ import java.net.URL;
 /**
  * Created by Srinivas on 03-Apr-16.
  */
-public class ServerTask extends AsyncTask<String,String,String> {
+public class ServerTask extends AsyncTask<Void,String,String> {
 
     private UserLocalStore userLocalStore;
     private ProgressDialog progressDialog;
@@ -52,7 +52,7 @@ public class ServerTask extends AsyncTask<String,String,String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Void... params) {
         try {
 
             if(type == 1)
@@ -70,10 +70,15 @@ public class ServerTask extends AsyncTask<String,String,String> {
                 obtainedPrintJobs = JSONParser.JSONtoPrintJobs(jsonArray);
                 return jsonArray.toString();
             }
-            else
+            else if(type == 3)
             {
                 ServerConnection.sendPrintJobToDatabase(user,url);
-                return new String("Done");
+                return new String("PrintJobSent");
+            }
+            else
+            {
+                ServerConnection.sendUserToDatabase(user,url);
+                return new String("UserSent");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,12 +110,19 @@ public class ServerTask extends AsyncTask<String,String,String> {
             else
                 Toast.makeText(context,"No PrintJobs received",Toast.LENGTH_LONG).show();
         }
-        else
+        else if(type == 3)
         {
-            if(s == "Done")
+            if(s == "PrintJobSent")
                 Toast.makeText(context,"PrintJobs Sent",Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(context,"PrintJobs not Sent",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            if(s == "UserSent")
+                Toast.makeText(context,"User Sent",Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context,"User not sent",Toast.LENGTH_SHORT).show();
         }
     }
 }
