@@ -165,6 +165,7 @@ public class ServerConnection extends Application {
         conn.setDoInput(true);
         conn.setUseCaches(false);
         conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
         conn.setRequestMethod("POST");
         conn.connect();
 
@@ -174,6 +175,45 @@ public class ServerConnection extends Application {
 
         osw.flush();
         osw.close();
+
+
+    }
+
+    public static void sendUserToDatabase(User user,String Address) throws IOException
+    {
+        JSONObject jsonUser = JSONParser.UsertoJSON(user);
+        HttpURLConnection conn = null;
+
+
+        try
+        {
+            URL url = new URL(Address);
+            conn = (HttpURLConnection)url.openConnection();
+
+            conn.setConnectTimeout(5000);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.connect();
+
+            OutputStream os = conn.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
+            osw.write(jsonUser.toString());
+
+            osw.flush();
+            osw.close();
+
+        } catch (java.net.SocketTimeoutException e){
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            if(conn != null)
+                conn.disconnect();
+
+        }
 
 
     }
