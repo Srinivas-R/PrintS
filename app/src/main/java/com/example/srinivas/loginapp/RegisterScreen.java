@@ -11,7 +11,6 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
 
     Button bRegister;
     EditText etName,etUSN,etMobile, etPassword;
-    UserLocalStore userLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,19 +18,8 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_register_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        */
-        userLocalStore = new UserLocalStore(this);
+
         bRegister = (Button)findViewById(R.id.button4);
         etName = (EditText)findViewById(R.id.editText3);
         etUSN = (EditText)findViewById(R.id.editText4);
