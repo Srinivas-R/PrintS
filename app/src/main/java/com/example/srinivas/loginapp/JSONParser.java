@@ -12,7 +12,7 @@ public class JSONParser {
     private static PrintJob JSONtoPrintJob(JSONObject job)
     {
         try {
-            String aUSN = job.getString("associatedUSN");
+            String aUSN = job.getString("USN");
             String jN = job.getString("JobName");
             String fP = "";
             int nop = job.getInt("NumberPages");
