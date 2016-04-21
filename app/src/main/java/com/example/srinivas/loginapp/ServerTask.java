@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -91,6 +92,7 @@ public class ServerTask extends AsyncTask<String,String,String> {
                     Toast.makeText(context,"Username : " + obtainedUser.name,Toast.LENGTH_LONG).show();
                     userLocalStore.storeUserData(obtainedUser);
                     userLocalStore.setUserLoggedIn(true);
+                    context.startActivity(new Intent(context,MainActivity.class));
                 }
                 else
                     Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();
