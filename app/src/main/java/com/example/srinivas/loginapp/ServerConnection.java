@@ -18,6 +18,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.xml.transform.stream.StreamResult;
+
 /**
  * Created by Srinivas on 27-Mar-16.
  */
@@ -49,7 +51,7 @@ public class ServerConnection extends Application {
             URL url = new URL(Address);
 
             conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(10000);
+            conn.setConnectTimeout(5000);
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setUseCaches(false);
@@ -152,38 +154,78 @@ public class ServerConnection extends Application {
         return jsonArray;
     }
 
-    public static void sendPrintJobToDatabase(User user,String Address) throws IOException
+    public static JSONObject sendPrintJobToDatabase(User user,String Address) throws IOException
     {
-        JSONObject jsonUser = JSONParser.PrintJobtoJSON(user.getLatestPrintJob());
+        JSONObject jsonPrintJob = JSONParser.PrintJobtoJSON(user.getLatestPrintJob());
+        JSONObject response = null;
+        BufferedReader streamReader = null;
+        HttpURLConnection conn =  null;
 
-        HttpURLConnection conn;
-        URL url = new URL(Address);
+        try {
+            URL url = new URL(Address);
 
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setDoOutput(true);
-        conn.setDoInput(true);
-        conn.setUseCaches(false);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestMethod("POST");
-        conn.connect();
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestMethod("POST");
+            conn.connect();
 
-        OutputStream os = conn.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
-        osw.write(jsonUser.toString());
+            OutputStream os = conn.getOutputStream();
+            OutputStreamWriter osw = new OutputStreamWriter(os,"UTF-8");
+            osw.write(jsonPrintJob.toString());
 
-        osw.flush();
-        osw.close();
+            osw.flush();
+            osw.close();
+
+            InputStream is = conn.getInputStream();
+            streamReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuffer responseStrBuffer = new StringBuffer();
+
+            String inputStr = "";
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuffer.append(inputStr);
+
+            if(responseStrBuffer.length()>0)
+            {
+                response = new JSONObject(responseStrBuffer.toString());
+            }
+            else
+            {
+                response = new JSONObject();
+                response.put("Success",false);
+            }
+
+
+
+        } catch (java.net.SocketTimeoutException e) {
+            e.printStackTrace();
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+
+            if(conn != null)
+                conn.disconnect();
+
+            if(streamReader != null)
+                streamReader.close();
+
+        }
+        return response;
 
 
     }
 
-    public static void sendUserToDatabase(User user,String Address) throws IOException
+    public static JSONObject sendUserToDatabase(User user,String Address) throws IOException
     {
         JSONObject jsonUser = JSONParser.UsertoJSON(user);
         HttpURLConnection conn = null;
-
+        JSONObject receivedUser = null;
+        BufferedReader streamReader = null;
 
         try
         {
@@ -192,6 +234,7 @@ public class ServerConnection extends Application {
 
             conn.setConnectTimeout(5000);
             conn.setDoOutput(true);
+            conn.setDoInput(true);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             conn.setUseCaches(false);
@@ -205,16 +248,34 @@ public class ServerConnection extends Application {
             osw.flush();
             osw.close();
 
+            InputStream is = conn.getInputStream();
+            streamReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuffer responseStrBuffer = new StringBuffer();
+
+            String inputStr = "";
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuffer.append(inputStr);
+
+            if(responseStrBuffer.length()>0)
+                receivedUser = new JSONObject(responseStrBuffer.toString());
+            else
+                receivedUser = JSONParser.UsertoJSON(new User("Error","DummyPassword"));
+
         } catch (java.net.SocketTimeoutException e){
             e.printStackTrace();
-        } catch (IOException e){
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
+        } catch (NullPointerException e){
             e.printStackTrace();
         } finally {
             if(conn != null)
                 conn.disconnect();
 
-        }
+            if(streamReader != null)
+                streamReader.close();
 
+        }
+        return receivedUser;
 
     }
 

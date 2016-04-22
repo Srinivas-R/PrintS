@@ -33,14 +33,18 @@ public class MyJobs extends AppCompatActivity{
 
         populateListView();
         registerClick();
+
     }
 
     private void populateListView() {
 
         //Create list of items to show
+        userLocalStore = new UserLocalStore(this);
         User temp = userLocalStore.getLoggedInUser();
+        if(temp==null)
+            return;
         String[] jobNames = temp.getJobNames();
-        //String[] jobNames = {"Srinivas","Karthik","This shit is Working"};
+
         //Create Adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1,
@@ -59,13 +63,11 @@ public class MyJobs extends AppCompatActivity{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TextView textView = (TextView) view;
                 String jobName = textView.getText().toString();
-                PrintJob job = userLocalStore.getLoggedInUser().searchPrintJobs(jobName);
-                if(job == null)
-                    Toast.makeText(MyJobs.this,"Error, Searched and found null job",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MyJobs.this,
-                            "Number of Pages : " + job.numberOfPages + "\nCompleted : " + job.completed,
-                            Toast.LENGTH_LONG).show();
+                //PrintJob job = userLocalStore.getLoggedInUser().searchPrintJobs(jobName);
+                User temp = userLocalStore.getLoggedInUser();
+                Toast.makeText(MyJobs.this,
+                        "Number of Pages : " + temp.myJobs[position].numberOfPages + "\nCompleted : " + temp.myJobs[position].completed,
+                        Toast.LENGTH_SHORT).show();
             }
         });
 

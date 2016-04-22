@@ -27,7 +27,7 @@ public class JSONParser {
     }
 
     public static JSONObject PrintJobtoJSON(PrintJob printJob)
-        {
+    {
         JSONObject output = new JSONObject();
         try {
             output.put("JobName",printJob.jobName);
@@ -48,6 +48,7 @@ public class JSONParser {
     {
         JSONObject temp = null;
         JSONArray JSONjobs = new JSONArray();
+        if(printJob!=null)
         for(int i = 0;i < n;i++)
         {
             temp = PrintJobtoJSON(printJob[i]);
@@ -75,7 +76,7 @@ public class JSONParser {
 
         }
 
-        return null;
+        return myJobs;
     }
 
     public static User JSONtoUser(JSONObject parentObject)
@@ -87,15 +88,22 @@ public class JSONParser {
             JSONArray jobs;
             int n;
 
-
             try {
                 password = parentObject.getString("passwd");
                 USN = parentObject.getString("USN");
                 name = parentObject.getString("Name");
                 mobile = parentObject.getString("Mobile");
-                jobs = parentObject.getJSONArray("PrintJobs");
-                //n = parentObject.getInt("numberOfPendingJobs");
-                n = jobs.length();
+                //jobs = parentObject.getJSONArray("PrintJobs");
+                jobs = null;
+                try {
+                    jobs = parentObject.getJSONArray("PrintJobs");
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+                if(jobs == null)
+                    n = 0;
+                else
+                    n = jobs.length();
                 if(n==0)
                     myJobs = null;
                 else
@@ -129,14 +137,14 @@ public class JSONParser {
 
         try
         {
-            output.put("userId",0);
+            output.put("userId","Dummy");
             output.put("passwd",password);
             output.put("USN",USN);
-            output.put("name",name);
-            output.put("mobile",mobile);
+            output.put("Name",name);
+            output.put("Mobile",mobile);
             //output.put("numberOfPendingJobs",numberOfPendingJobs);
-            output.put("myJobs",jobs);
-
+            output.put("PrintJobs",jobs);
+            return  output;
         } catch (JSONException e) {
             e.printStackTrace();
         }

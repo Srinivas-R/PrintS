@@ -26,8 +26,10 @@ public class ServerTask extends AsyncTask<Void,String,String> {
     private User user;
     private User obtainedUser;
     private PrintJob[] obtainedPrintJobs;
+    private boolean PrintJobServerResponse;
     private Context context;
-    private int type;                              //1 - Get User, 2 - Get Array of PrintJobs
+    private int type;                 //1 - Get User, 2 - Get PrintJobs, 3 - Send New PrintJob,
+                                        //4 - Register New User
 
     public User getObtainedUser()
     {
@@ -41,6 +43,7 @@ public class ServerTask extends AsyncTask<Void,String,String> {
         this.user = u;
         this.obtainedUser = null;
         this.obtainedPrintJobs = null;
+        this.PrintJobServerResponse = false;
         this.context = context;
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
@@ -60,8 +63,7 @@ public class ServerTask extends AsyncTask<Void,String,String> {
                 JSONObject jsonObject = ServerConnection.loadUserFromDatabase(user,url);
                 //Parse into user object, store in obtainedUser
                 obtainedUser = JSONParser.JSONtoUser(jsonObject);
-                if(jsonObject!=null)
-                return jsonObject.toString();
+                return "UserObtained";
             }
             else if(type == 2)
             {
@@ -72,15 +74,22 @@ public class ServerTask extends AsyncTask<Void,String,String> {
             }
             else if(type == 3)
             {
-                ServerConnection.sendPrintJobToDatabase(user,url);
-                return new String("PrintJobSent");
+                JSONObject jsonObject = ServerConnection.sendPrintJobToDatabase(user, url);
+                PrintJobServerResponse = jsonObject.getBoolean("Success");
+                if(PrintJobServerResponse == true)
+                    return "PrintJobSent";
+                else
+                    return "Print Jobs Not Sent";
             }
-            else
+            else if(type == 4)
             {
-                ServerConnection.sendUserToDatabase(user,url);
-                return new String("UserSent");
+                JSONObject jsonObject = ServerConnection.sendUserToDatabase(user,url);
+                obtainedUser = JSONParser.JSONtoUser(jsonObject);
+                return "UserRegistered";
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -92,7 +101,7 @@ public class ServerTask extends AsyncTask<Void,String,String> {
         progressDialog.dismiss();
         if(type == 1)
         {
-            if(s != null)
+            if(s == "UserObtained")
             {
                 Toast.makeText(context,"Username : " + obtainedUser.name,Toast.LENGTH_LONG).show();
                 userLocalStore.storeUserData(obtainedUser);
@@ -100,15 +109,15 @@ public class ServerTask extends AsyncTask<Void,String,String> {
                 context.startActivity(new Intent(context,MainActivity.class));
             }
             else
-                Toast.makeText(context,"No data received",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"No data received",Toast.LENGTH_SHORT).show();
 
         }
         else if(type == 2)
         {
             if(s.length() > 0)
-                Toast.makeText(context,"PrintJobs received",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"PrintJobs received",Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(context,"No PrintJobs received",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"No PrintJobs received",Toast.LENGTH_SHORT).show();
         }
         else if(type == 3)
         {
@@ -117,12 +126,19 @@ public class ServerTask extends AsyncTask<Void,String,String> {
             else
                 Toast.makeText(context,"PrintJobs not Sent",Toast.LENGTH_SHORT).show();
         }
-        else
+        else if(type == 4)
         {
-            if(s == "UserSent")
-                Toast.makeText(context,"User Sent",Toast.LENGTH_SHORT).show();
+            if(s == "UserRegistered")
+            {
+                Toast.makeText(context,"User Name Registered : " + obtainedUser.name,Toast.LENGTH_SHORT).show();
+                userLocalStore.storeUserData(obtainedUser);
+                userLocalStore.setUserLoggedIn(true);
+                context.startActivity(new Intent(context, MainActivity.class));
+            }
             else
                 Toast.makeText(context,"User not sent",Toast.LENGTH_SHORT).show();
         }
+        else
+            Toast.makeText(context,"Invalid Server Task Type",Toast.LENGTH_SHORT).show();
     }
 }

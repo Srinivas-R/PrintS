@@ -41,7 +41,7 @@ public class RegisterScreen extends AppCompatActivity implements View.OnClickLis
                 String mobile = etMobile.getText().toString();
                 User user = new User(name,USN,password,mobile,null,0);
 
-                ServerTask serverTask = new ServerTask(user,"http://25.51.242.195:3001/users/create",4,RegisterScreen.this);
+                ServerTask serverTask = new ServerTask(user,"http://192.168.43.95:3001/users/create",4,RegisterScreen.this);
                 serverTask.execute();
                 break;
         }

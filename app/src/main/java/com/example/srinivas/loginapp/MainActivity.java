@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         //TESTING
-        startActivity(new Intent(this, MyJobs.class));
+        //startActivity(new Intent(this, MyJobs.class));
         userLocalStore = new UserLocalStore(this);
         bLogout = (Button)findViewById(R.id.button3);
         bNewJob = (Button)findViewById(R.id.button5);
@@ -53,9 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -80,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void allow()
     {
         User user = userLocalStore.getLoggedInUser();
-        tvName.setText(user.name);
-        tvUSN.setText(user.USN);
+        tvName.setText("Welcome, " + user.name + "!");
+        tvUSN.setText("USN : " + user.USN);
         bNewJob.setEnabled(true);
         bMyJobs.setEnabled(true);
 

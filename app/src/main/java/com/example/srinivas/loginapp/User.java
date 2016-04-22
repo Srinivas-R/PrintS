@@ -47,6 +47,7 @@ public class User {
     public String[] getJobNames()
     {
         String[] output = new String[numberOfJobs];
+        if(myJobs != null)
         for(int i=0;i<numberOfJobs;i++)
         {
             output[i] = myJobs[i].jobName;
